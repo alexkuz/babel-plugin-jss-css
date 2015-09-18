@@ -37,9 +37,6 @@ module.exports = function (babel) {
         }
         return obj;
       }, {});
-      if (options.named === false) {
-        console.log(cssToJss(text, options));
-      }
       return convertToTree(cssToJss(text, options));
     }
 
