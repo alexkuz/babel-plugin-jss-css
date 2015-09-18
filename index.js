@@ -1,6 +1,6 @@
 var cssToJss = require('jss-css/lib/cssToJss');
 
-var jssRE = /\/\*\s*jss-css\s*\*\//;
+var jssRE = /\/\*\s*jss-css(?:\s+([\w:\s]+))?\s*\*\//;
 
 module.exports = function (babel) {
   var t = babel.types;
@@ -18,8 +18,32 @@ module.exports = function (babel) {
     return t.objectExpression(props);
   }
 
+  function parseVal(val) {
+    if (val === undefined || val === 'true') {
+      return true;
+    } else if (val === 'false') {
+      return false;
+    }
+
+    return val;
+  }
+
   function getNode(isJssCss, text, node) {
-    return isJssCss ? convertToTree(cssToJss(text)) : node;
+    if (isJssCss) {
+      var options = (text.match(jssRE)[1] || '').split(/\s+/).reduce(function(obj, p) {
+        if (p) {
+          var keyVal = p.split(':');
+          obj[keyVal[0]] = parseVal(keyVal[1]);
+        }
+        return obj;
+      }, {});
+      if (options.named === false) {
+        console.log(cssToJss(text, options));
+      }
+      return convertToTree(cssToJss(text, options));
+    }
+
+    return node;
   }
   
   return new babel.Transformer('plugin-jss-css', {

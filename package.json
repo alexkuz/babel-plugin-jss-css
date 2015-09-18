@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/alexkuz/babel-plugin-jss-css/issues"
   },
-  "homepage": "https://github.com/alexkuz/babel-plugin-jss-css#readme"
+  "homepage": "https://github.com/alexkuz/babel-plugin-jss-css#readme",
+  "peerDependencies": {
+    "jss-css": "0.0.2"
+  }
 }
