@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-jss-css",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/alexkuz/babel-plugin-jss-css#readme",
   "peerDependencies": {
-    "jss-css": "^0.2.0"
+    "jss-css": "^0.2.0",
+    "babel": "^6.3.13"
   }
 }

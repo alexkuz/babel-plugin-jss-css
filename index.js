@@ -9,10 +9,9 @@ module.exports = function (babel) {
     var props = [];
     for (var key in obj) {
       var val = obj[key];
-      props.push(t.property(
-        'init',
-        t.identifier(key),
-        typeof val !== 'string' ? convertToTree(obj[key]) : t.literal(obj[key])
+      props.push(t.objectProperty(
+        t.stringLiteral(key),
+        typeof val !== 'string' ? convertToTree(obj[key]) : t.stringLiteral(obj[key])
       ))
     }
     return t.objectExpression(props);
@@ -43,19 +42,21 @@ module.exports = function (babel) {
     return node;
   }
   
-  return new babel.Transformer('plugin-jss-css', {
-    Literal: function (node, parent) {
-      var text = node.value;
-      var isJssCss = typeof text === 'string' && jssRE.test(text);
+  return {
+    visitor: {
+      Literal: function (path) {
+        var text = path.node.value;
+        var isJssCss = typeof text === 'string' && jssRE.test(text);
 
-      return getNode(isJssCss, text, node);
-    },
+        path.replaceWith(getNode(isJssCss, text, path.node));
+      },
 
-    TemplateLiteral: function(node, parent) {
-      var text = node.quasis[0].value.raw;
-      var isJssCss = node.quasis.length === 1 && jssRE.test(text);
+      TemplateLiteral: function(path) {
+        var text = path.node.quasis[0].value.raw;
+        var isJssCss = path.node.quasis.length === 1 && jssRE.test(text);
 
-      return getNode(isJssCss, text, node);
+        path.replaceWith(getNode(isJssCss, text, path.node));
+      }
     }
-  });
+  };
 };
